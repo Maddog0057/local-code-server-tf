@@ -1,0 +1,5 @@
+*.tfstate
+*.backup
+*.hcl.lock
+.terraform/
+*scratch*
