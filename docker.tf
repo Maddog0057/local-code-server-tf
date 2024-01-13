@@ -1,24 +1,10 @@
-## Comment out this block and use below for 1password support
-terraform {
-  required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = ">= 2.23.1"
-    }
-  }
-}
-
-provider "docker" {
-  host = "unix:///var/run/docker.sock"
-}
-
-################
-
+# Create a file called secrets.tf and add the following
 /*
 locals {
   op_token = "<one_pass_token>"
   vault_id = "<one_pass_vault>"
 }
+*/
 terraform {
   required_providers {
     onepassword = {
@@ -39,4 +25,3 @@ provider "onepassword" {
 provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
-*/

@@ -3,3 +3,4 @@
 *.hcl.lock
 .terraform/
 *scratch*
+secrets.*
