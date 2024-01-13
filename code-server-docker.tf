@@ -60,14 +60,3 @@ resource "docker_container" "codeserver_container" {
     external = random_integer.code_server_port
   }
 }
-
-resource "onepassword_item" "cs_sudo_login_1p" {
-  vault    = local.vault_id
-  title    = "${docker_container.codeserver_container.name} Sudo"
-  category = "login"
-  username = "root"
-  password_recipe {
-    length  = 32
-    symbols = true
-  }
-}
