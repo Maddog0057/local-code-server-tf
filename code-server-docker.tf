@@ -26,6 +26,17 @@ resource "random_integer" "code_server_port" {
   }
 }
 
+resource "onepassword_item" "cs_sudo_login" {
+  vault    = local.vault_id
+  title    = "${docker_container.codeserver_container.name} Sudo"
+  category = "login"
+  username = "root"
+  password_recipe {
+    length  = 32
+    symbols = true
+  }
+}
+
 resource "docker_container" "codeserver_container" {
   image = docker_image.code-server-img.image_id
   name  = random_pet.code_server_name.keepers.container_name
