@@ -11,7 +11,7 @@ data "local_file" "config_script" {
 
 resource "random_pet" "code_server_name" {
   keepers = {
-    container_name = docker_container.codeserver_container.name
+    container_id = docker_container.codeserver_container.id
   }
   prefix = "code_server_"
   separator = "_"
@@ -21,8 +21,7 @@ resource "random_integer" "code_server_port" {
   min = 8444
   max = 8450
   keepers = {
-    # Generate a new integer each time we switch to a new listener ARN
-    listener_val = random_pet.code_server_name
+    listener_val = docker_container.codeserver_container.id
   }
 }
 
@@ -39,7 +38,7 @@ resource "onepassword_item" "cs_sudo_login" {
 
 resource "docker_container" "codeserver_container" {
   image = docker_image.code-server-img.image_id
-  name  = random_pet.code_server_name.keepers.container_name
+  name  = random_pet.code_server_name
   entrypoint = [
     "/bin/bash",
     "-c",
