@@ -35,7 +35,7 @@ resource "docker_container" "codeserver_d_container" {
 
 resource "onepassword_item" "cs_sudo_login" {
   vault    = local.vault_id
-  title    = "${resource.docker_container.name} Sudo"
+  title    = "${docker_container.name} Sudo"
   category = "login"
   username = "root"
   password_recipe {
@@ -46,7 +46,7 @@ resource "onepassword_item" "cs_sudo_login" {
 
 resource "random_pet" "code_server_name" {
   keepers = {
-    container_name = resource.docker_container.name
+    container_name = docker_container.name
   }
   prefix = "code_server_"
   separator = "_"
