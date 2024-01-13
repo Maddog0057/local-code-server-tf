@@ -61,7 +61,7 @@ resource "docker_container" "codeserver_container" {
   }
 }
 
-resource "onepassword_item" "cs_sudo_login" {
+resource "onepassword_item" "cs_sudo_login_1p" {
   vault    = local.vault_id
   title    = "${docker_container.codeserver_container.name} Sudo"
   category = "login"
