@@ -10,7 +10,7 @@ data "local_file" "config_script" {
 }
 
 resource "random_pet" "code_server_name" {
-  prefix = "code_server_"
+  prefix = "code_server"
   separator = "_"
 }
 
