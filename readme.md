@@ -4,13 +4,16 @@ I wanted a portable dev environment, liked code-server, and got sick of installi
 Working on getting roaming profile support working without the need for a cloud service....
 
 ### This container will spin up a VS code server with the following components:
-* Terraform
+* Terraform 1.6.6
 * GitHub CLI
-* kubectl
-* 1password
-* Powershell
-* Python 3.10
+* kubectl 1.26
+* helm 3.11.2
+* 1password CLI
+* Powershell 7.4
+* Python 3
 * Ping, netcat, and a few other network utilities
+
+Utilities without a version are updated automatically
 
 ### The server URL will be provided as Terraform output
 
