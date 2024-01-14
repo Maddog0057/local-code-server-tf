@@ -21,7 +21,7 @@ resource "random_integer" "code_server_port" {
 
 resource "onepassword_item" "cs_sudo_login" {
   vault    = local.vault_id
-  title    = "${docker_container.codeserver_container.name} Sudo"
+  title    = "code_server_${random_pet.code_server_name} Sudo"
   category = "login"
   username = "root"
   password_recipe {
