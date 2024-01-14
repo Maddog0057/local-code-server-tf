@@ -12,7 +12,7 @@ Working on getting roaming profile support working without the need for a cloud 
 * Python 3.10
 * Ping, netcat, and a few other network utilities
 
-### The server will be available on http://localhost:8443/
+### The server URL will be provided as Terraform output
 
 ## Installation
 
@@ -36,7 +36,7 @@ Out of the box this script is configured for MacOS/Unix, in order to run on Wido
 There is no additional action items for Apple Silicon so long as Rosetta supprt is enabled in Docker, all packages are universal.
 
 ### 1Password Support
-This script is configured to allow for one password secret access. See comments in `code-server-docker.tf` and `docker.tf` for instructions.
+This script is configured to allow for one password secret access. Checkout branch `1password` for instructions.
 
 ### Adding and Subtracting Utilities
 Any package available by way of the APT repository can be added to the install list in `code-server-setup.sh` otherwise add your install script to the end of the file, just make sure `/init` is always the last line of the file.

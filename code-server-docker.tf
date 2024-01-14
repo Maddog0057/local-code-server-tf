@@ -17,9 +17,24 @@ resource "random_password" "password" {
   special          = true
 }
 
+# Randomizes the container name so multiple workspaces can be run
+resource "random_pet" "code_server_name" {
+  prefix = "code_server"
+  separator = "_"
+}
+
+# Randomizes the container port so multiple workspaces can be run
+# I'm aware this can potentially generate an in-use port, I'm hoping tf will catch that.
+# Otherwise, the docker tf provider does not give me a way to verify in-use ports
+resource "random_integer" "code_server_port" {
+  min = 8444
+  max = 8450
+}
+
+# Where the magic happens
 resource "docker_container" "codeserver_d_container" {
   image = docker_image.code-server-img.image_id
-  name  = "codeserver-docker-local"
+  name  = random_pet.code_server_name.id
   entrypoint = [
     "/bin/bash",
     "-c",
@@ -37,36 +52,17 @@ resource "docker_container" "codeserver_d_container" {
   }
   ports {
     internal = 8443
-    external = 8443
+    external = random_integer.code_server_port.result
   }
 }
 
 # Comment this out if you do not want this password displyed at apply
 # NOTE: If left uncommented, password will be stored in plain text in tfstate and hcl.lock
-output "random_pass" {
+output "code_server_pass" {
   value = nonsensitive(random_password.password.result)
 }
 
-# Uncomment for 1Password Support
-/*
-resource "onepassword_item" "cs_sudo_login" {
-  vault    = local.vault_id
-  title    = "Local Code Server Sudo"
-  category = "login"
-  username = "root"
-  password_recipe {
-    length  = 32
-    symbols = true
-  }
+# Prints the server URL as output, basically just the random port that changes
+output "code_server_url" {
+  value = "http://localhost:${random_integer.code_server_port.result}/"
 }
-*/
-
-## Replace the container's ENV with the following
-/*
-env = [
-    "SUDO_PASSWORD=${onepassword_item.cs_sudo_login.password}",
-    "PGID=1000",
-    "PUID=1000",
-    "TZ=America/New_York"
-  ]
-*/
