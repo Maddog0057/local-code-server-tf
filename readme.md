@@ -4,15 +4,18 @@ I wanted a portable dev environment, liked code-server, and got sick of installi
 Working on getting roaming profile support working without the need for a cloud service....
 
 ### This container will spin up a VS code server with the following components:
-* Terraform
+* Terraform 1.6.6
 * GitHub CLI
-* kubectl
-* 1password
-* Powershell
-* Python 3.10
+* kubectl 1.26
+* helm 3.11.2
+* 1password CLI
+* Powershell 7.4
+* Python 3
 * Ping, netcat, and a few other network utilities
 
-### The server will be available on http://localhost:port where port is provided as an output at tf apply
+Utilities without a version are updated automatically
+
+### The server will be available on http://localhost:port where port saved as part of teh server URL in 1Password
 
 ## Installation
 
@@ -20,6 +23,7 @@ Working on getting roaming profile support working without the need for a cloud 
 * Git - https://git-scm.com/downloads
 * Docker - https://docs.docker.com/get-docker/
 * Terraform - https://developer.hashicorp.com/terraform/install
+* 1Password CLI - https://developer.1password.com/docs/cli/get-started/
 
 ### Procedure:
 * `git clone https://github.com/Maddog0057/local-code-server-tf`
