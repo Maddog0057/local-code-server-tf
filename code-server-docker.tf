@@ -49,7 +49,7 @@ resource "docker_container" "codeserver_container" {
     type   = "volume"
   }
   ports {
-    internal = random_integer.code_server_port
-    external = random_integer.code_server_port
+    internal = random_integer.code_server_port.result
+    external = random_integer.code_server_port.result
   }
 }
