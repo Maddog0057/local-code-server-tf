@@ -21,7 +21,8 @@ resource "random_integer" "code_server_port" {
 
 resource "onepassword_item" "cs_sudo_login" {
   vault    = local.vault_id
-  title    = "code_server_${random_pet.code_server_name.id} Sudo"
+  title    = "${random_pet.code_server_name.id} Sudo"
+  url = "http://localhost:${random_integer.code_server_port.result}/"
   category = "login"
   username = "root"
   password_recipe {
@@ -49,7 +50,11 @@ resource "docker_container" "codeserver_container" {
     type   = "volume"
   }
   ports {
-    internal = random_integer.code_server_port.result
+    internal = 8443
     external = random_integer.code_server_port.result
   }
+}
+
+output "code_server_url" {
+  value = "http://localhost:${random_integer.code_server_port.result}/"
 }
