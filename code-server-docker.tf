@@ -10,9 +10,6 @@ data "local_file" "config_script" {
 }
 
 resource "random_pet" "code_server_name" {
-  keepers = {
-    container_id = docker_container.codeserver_container.id
-  }
   prefix = "code_server_"
   separator = "_"
 }
@@ -20,9 +17,6 @@ resource "random_pet" "code_server_name" {
 resource "random_integer" "code_server_port" {
   min = 8444
   max = 8450
-  keepers = {
-    listener_val = docker_container.codeserver_container.id
-  }
 }
 
 resource "onepassword_item" "cs_sudo_login" {
