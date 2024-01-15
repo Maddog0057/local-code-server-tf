@@ -42,7 +42,7 @@ resource "docker_container" "codeserver_container" {
     "${data.local_file.config_script.content}"
   ]
   env = [
-    "SUDO_PASSWORD=${onepassword_item.cs_sudo_login.password}",
+    sensitive("SUDO_PASSWORD=${onepassword_item.cs_sudo_login.password}"),
     "PGID=1000",
     "PUID=1000",
     "TZ=America/New_York"
@@ -60,8 +60,8 @@ resource "docker_container" "codeserver_container" {
 resource "docker_container" "wireguard_container" {
   image = docker_image.wireguard-img.image_id
   name  = "wireguard_${random_pet.pet_name.id}"
-  priviliged = true
-  capabilities = {
+  privileged = true
+  capabilities {
     add = "NET_ADMIN"
   }
   env = [
@@ -73,14 +73,15 @@ resource "docker_container" "wireguard_container" {
     target = "/config"
     type   = "volume"
   }
+  upload {
+    file = "/config/wg_confs/tunnel.conf"
+    content_base64 = base64encode(data.wireguard_config_document.peer.conf)
+  }
   ports {
     internal = 8443
     external = random_integer.code_server_port.result
   }
 }
-
-
-
 
 output "code_server_url" {
   value = "http://localhost:${random_integer.code_server_port.result}/"

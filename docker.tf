@@ -19,6 +19,10 @@ terraform {
       source = "terraform-routeros/routeros"
       version = ">= 1.31.0"
     }
+    wireguard = {
+      source = "OJFord/wireguard"
+      version = ">= 0.2.2"
+    }
   }
 }
 
@@ -30,15 +34,20 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
-resource "onepassword_item" "ros_api_creds" {
+data "onepassword_item" "ros_api_creds" {
   vault = local.vault_id
   uuid = local.ros_op_id
+}
+
+data "onepassword_item" "ros_ca_cert" {
+  vault = local.vault_id
+  uuid = local.ros_ca_cert
 }
 
 provider "routeros" {
   hosturl        = data.onepassword_item.ros_api_creds.url
   username       = data.onepassword_item.ros_api_creds.username
   password       = data.onepassword_item.ros_api_creds.password
-  ca_certificate = data.onepassword_item.ros_api_creds.url.section.0.note_value
+  ca_certificate = data.onepassword_item.ros_ca_cert.content
   insecure       = true
 }
