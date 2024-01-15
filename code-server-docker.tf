@@ -51,7 +51,7 @@ resource "docker_container" "codeserver_container" {
   }
   volumes {
     host_path = "/var/run/docker.sock"
-    container_path = "/var/run/docker.sock"
+    container_path = "/config/docker.sock"
   }
   ports {
     internal = 8443
