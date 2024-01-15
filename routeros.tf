@@ -16,23 +16,23 @@ resource "random_integer" "ip_host" {
 }
 
 resource "routeros_interface_wireguard" "test_wg_interface" {
-  name        = "${random_pet.pet_name}-WG"
-  mtu = 1500
+  name        = "${random_pet.pet_name.id}-WG"
+  mtu         = 1500
   listen_port = random_integer.wireguard_port.result
 }
 
 resource "routeros_interface_wireguard_peer" "wg_peer" {
-  interface  = routeros_interface_wireguard.test_wg_interface.name
-  public_key = base64encode(wireguard_asymmetric_key.wg_asc_key.public_key)
-  persistent_keepalive = 25
+  interface            = routeros_interface_wireguard.test_wg_interface.name
+  public_key           = wireguard_asymmetric_key.wg_asc_key.public_key
+  persistent_keepalive = "25s"
   allowed_address = [
-    "10.77.${random_integer.ip_subnet}.0/24"
+    "10.77.${random_integer.ip_subnet.result}.0/24"
   ]
 }
 
 data "wireguard_config_document" "peer" {
   private_key = wireguard_asymmetric_key.wg_asc_key.private_key
-  listen_port = random_integer.wireguard_port
+  listen_port = random_integer.wireguard_port.result
   dns = [
     "1.1.1.1"
   ]
@@ -40,9 +40,9 @@ data "wireguard_config_document" "peer" {
   #PreDown = "HOMENET=10.77.${random_integer.ip_subnet}.0/24; ip route del $HOMENET via $DROUTE; iptables -D OUTPUT ! -o %i -m mark ! --mark $(wg show %i fwmark) -m addrtype ! --dst-type LOCAL -j REJECT; iptables -D OUTPUT -d $HOMENET -j ACCEPT"
 
   peer {
-    public_key    = base64encode(routeros_interface_wireguard.test_wg_interface.public_key)
+    public_key = routeros_interface_wireguard.test_wg_interface.public_key
     allowed_ips = [
-      "10.77.${random_integer.ip_subnet}.${random_integer.ip_subnet}/32",
+      "10.77.${random_integer.ip_subnet.result}.${random_integer.ip_subnet.result}/32",
     ]
     persistent_keepalive = 25
   }

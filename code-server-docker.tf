@@ -24,7 +24,7 @@ resource "random_integer" "code_server_port" {
 resource "onepassword_item" "cs_sudo_login" {
   vault    = local.vault_id
   title    = "code_server_${random_pet.pet_name.id} Sudo"
-  url = "http://localhost:${random_integer.code_server_port.result}/"
+  url      = "http://localhost:${random_integer.code_server_port.result}/"
   category = "login"
   username = "root"
   password_recipe {
@@ -58,11 +58,13 @@ resource "docker_container" "codeserver_container" {
 }
 
 resource "docker_container" "wireguard_container" {
-  image = docker_image.wireguard-img.image_id
-  name  = "wireguard_${random_pet.pet_name.id}"
+  image      = docker_image.wireguard-img.image_id
+  name       = "wireguard_${random_pet.pet_name.id}"
   privileged = true
   capabilities {
-    add = "NET_ADMIN"
+    add = [
+      "NET_ADMIN"
+    ]
   }
   env = [
     "PGID=1000",
@@ -74,7 +76,7 @@ resource "docker_container" "wireguard_container" {
     type   = "volume"
   }
   upload {
-    file = "/config/wg_confs/tunnel.conf"
+    file           = "/config/wg_confs/tunnel.conf"
     content_base64 = base64encode(data.wireguard_config_document.peer.conf)
   }
   ports {
