@@ -49,6 +49,10 @@ resource "docker_container" "codeserver_container" {
     target = "/config"
     type   = "volume"
   }
+  volumes {
+    host_path = "/var/run/docker.sock"
+    container_path = "/var/run/docker.sock"
+  }
   ports {
     internal = 8443
     external = random_integer.code_server_port.result
