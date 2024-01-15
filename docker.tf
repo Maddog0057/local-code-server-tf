@@ -15,6 +15,10 @@ terraform {
       source  = "kreuzwerker/docker"
       version = ">= 2.23.1"
     }
+    routeros = {
+      source = "terraform-routeros/routeros"
+      version = ">= 1.31.0"
+    }
   }
 }
 
@@ -24,4 +28,17 @@ provider "onepassword" {
 
 provider "docker" {
   host = "unix:///var/run/docker.sock"
+}
+
+resource "onepassword_item" "ros_api_creds" {
+  vault = local.vault_id
+  uuid = local.ros_op_id
+}
+
+provider "routeros" {
+  hosturl        = data.onepassword_item.ros_api_creds.url
+  username       = data.onepassword_item.ros_api_creds.username
+  password       = data.onepassword_item.ros_api_creds.password
+  ca_certificate = data.onepassword_item.ros_api_creds.url.section.0.note_value
+  insecure       = true
 }

@@ -3,14 +3,16 @@
 resource "docker_image" "code-server-img" {
   name = "lscr.io/linuxserver/code-server:latest"
 }
+resource "docker_image" "wireguard-img" {
+  name = "lscr.io/linuxserver/wireguard:latest"
+}
 
 # Pulls config script into terraform
 data "local_file" "config_script" {
   filename = "./code-server-setup.sh"
 }
 
-resource "random_pet" "code_server_name" {
-  prefix = "code_server"
+resource "random_pet" "pet_name" {
   separator = "_"
 }
 
@@ -21,7 +23,7 @@ resource "random_integer" "code_server_port" {
 
 resource "onepassword_item" "cs_sudo_login" {
   vault    = local.vault_id
-  title    = "${random_pet.code_server_name.id} Sudo"
+  title    = "code_server_${random_pet.pet_name.id} Sudo"
   url = "http://localhost:${random_integer.code_server_port.result}/"
   category = "login"
   username = "root"
@@ -33,7 +35,7 @@ resource "onepassword_item" "cs_sudo_login" {
 
 resource "docker_container" "codeserver_container" {
   image = docker_image.code-server-img.image_id
-  name  = random_pet.code_server_name.id
+  name  = "code_server_${random_pet.pet_name.id}"
   entrypoint = [
     "/bin/bash",
     "-c",
@@ -54,6 +56,31 @@ resource "docker_container" "codeserver_container" {
     external = random_integer.code_server_port.result
   }
 }
+
+resource "docker_container" "wireguard_container" {
+  image = docker_image.wireguard-img.image_id
+  name  = "wireguard_${random_pet.pet_name.id}"
+  priviliged = true
+  capabilities = {
+    add = "NET_ADMIN"
+  }
+  env = [
+    "PGID=1000",
+    "PUID=1000",
+    "TZ=America/New_York"
+  ]
+  mounts {
+    target = "/config"
+    type   = "volume"
+  }
+  ports {
+    internal = 8443
+    external = random_integer.code_server_port.result
+  }
+}
+
+
+
 
 output "code_server_url" {
   value = "http://localhost:${random_integer.code_server_port.result}/"
