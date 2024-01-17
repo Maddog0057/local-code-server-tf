@@ -10,7 +10,6 @@ data "local_file" "config_script" {
 }
 
 resource "random_pet" "code_server_name" {
-  prefix = "code_server"
   separator = "_"
 }
 
@@ -19,15 +18,37 @@ resource "random_integer" "code_server_port" {
   max = 8450
 }
 
+resource "tls_private_key" "cs_ed25519" {
+  algorithm = "ED25519"
+}
+
 resource "onepassword_item" "cs_sudo_login" {
   vault    = local.vault_id
-  title    = "${random_pet.code_server_name.id} Sudo"
+  title    = "Code Server ${random_pet.code_server_name.id} Sudo"
   url = "http://localhost:${random_integer.code_server_port.result}/"
   category = "login"
   username = "root"
   password_recipe {
     length  = 32
     symbols = true
+  }
+  section {
+    label = "cs_pk"
+    field {
+      label = "privKey"
+      type = "CONCEALED"
+      value = tls_private_key.cs_ed25519.private_key_openssh
+    }
+    field {
+      label = "pubKey"
+      type = "STRING"
+      value = tls_private_key.cs_ed25519.public_key_openssh
+    }
+    field {
+      label = "pubKey-sha256"
+      type = "STRING"
+      value = tls_private_key.cs_ed25519.public_key_fingerprint_sha256
+    }
   }
 }
 
@@ -49,9 +70,10 @@ resource "docker_container" "codeserver_container" {
     target = "/config"
     type   = "volume"
   }
-  volumes {
-    host_path = "/var/run/docker.sock"
-    container_path = "/config/docker.sock"
+  # Comment out for local docker
+  upload {
+    file = "/config/.ssh/id_ed25519"
+    base64_content = sensitive(tls_private_key.cs_ed25519.private_key_openssh)
   }
   ports {
     internal = 8443

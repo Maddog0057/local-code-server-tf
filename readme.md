@@ -15,7 +15,7 @@ Working on getting roaming profile support working without the need for a cloud 
 
 Utilities without a version are updated automatically
 
-### The server will be available on http://localhost:port where port saved as part of teh server URL in 1Password
+### The server will be available on http://localhost:port where port saved as part of the server URL in 1Password
 
 ## Installation
 
@@ -42,9 +42,22 @@ There is no additional action items for Apple Silicon so long as Rosetta supprt 
 ### 1Password Support
 Configured out of the box, add a file called `secrets.tf` (or `literally_anything.tf`) and add local variables for `op_token` pointing to your 1password API token and `op_vault` to your vault ID. If you copy a link to any item in the vault `v=blah` will be part of the link, `blah` is your vault ID. Using this same method you can also find the Item UUID of any item by looking at `i=blah`. You can find out how to generate an API token here https://developer.1password.com/docs/service-accounts/get-started/
 
+### Remote Docker Daemon Access
+Seemed like a pain to try and get this to run docker in docker, and passing through the local socket sounds like a bad idea so this seemed like a cool middle ground, you will /essentially/ have root access on the target machine but the connection is encrypted and you need root to achieve this anyway. 
+On the target machine (make sure you have root) allow a user access to the docker daemon socket (`/var/run/docker.sock` usually) this can be done in a variety of ways (almost all carry increased risk!), simply `sudo usermod -aG docker <your_user>` usually works nicely (and is highly risky! Do this within an internal network only!!!), you can also mess around with simlinks, docker as a local user, etc. but this method will work with what I have built.
+
+#### To Enable remote docker access complete the following
+* On your target machine verify access to the docker daemon by running `docker info` as your target user
+* In 1Password create a login item with the username and password of the target account and set the website to the IP/hostname of your target machine
+* Add a local varible for `op_ssh_id` pointing to the UUID of the 1Password item
+* Rename `copy-public-key.tf.off` to `copy-public-key.tf`
+* In `docker.tf` Uncomment the remote host line and comment the local docker host line
+
 ### Adding and Subtracting Utilities
 Any package available by way of the APT repository can be added to the install list in `code-server-setup.sh` otherwise add your install script to the end of the file, just make sure `/init` is always the last line of the file.
 
 Any Utility can be removed from the script, the script can even be removed altogether, the VS code server relies on it in no way, it is simply a way to pre-install commonly needed tools.
 
 Base Image: https://docs.linuxserver.io/images/docker-code-server/
+
+* All actions are taken at your own risk, I am not responsible for any damage or harm that may come of you related or unrelated to this repository 

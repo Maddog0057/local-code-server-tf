@@ -23,5 +23,9 @@ provider "onepassword" {
 }
 
 provider "docker" {
+  # local docker host
   host = "unix:///var/run/docker.sock"
+  # Remote docker host
+  #host = "ssh://${data.onepassword_item.remote_docker_creds.username}@${data.onepassword_item.remote_docker_creds.url}"
 }
+
