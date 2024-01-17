@@ -1,16 +1,15 @@
-
 data "onepassword_item" "remote_docker_creds" {
-    vault = local.vault_id
-    uuid = local.op_ssh_id
+  vault = local.vault_id
+  uuid  = local.op_ssh_id
 }
 
 resource "null_resource" "copy_key" {
   triggers = {
     invokes_me_everytime = uuid()
-    cs_pubKey = tls_private_key.cs_ed25519.public_key_openssh
-    sv_host = data.onepassword_item.remote_docker_creds.url
-    sv_user = data.onepassword_item.remote_docker_creds.username
-    sv_pass = data.onepassword_item.remote_docker_creds.password
+    cs_pubKey            = tls_private_key.cs_ed25519.public_key_openssh
+    sv_host              = data.onepassword_item.remote_docker_creds.url
+    sv_user              = data.onepassword_item.remote_docker_creds.username
+    sv_pass              = data.onepassword_item.remote_docker_creds.password
   }
   connection {
     type     = "ssh"
@@ -22,7 +21,7 @@ resource "null_resource" "copy_key" {
     when = create
     inline = [
       "#!/bin/bash",
-      "echo \"${trimspace(self.triggers.cs_pubKey)}\" >> ~/.ssh/authorized_keys"
+      "echo \"${trimspace(self.triggers.cs_pubKey)} ${self.triggers.sv_user}@${random_pet.code_server_name.id}.cs\" >> ~/.ssh/authorized_keys"
     ]
   }
   provisioner "remote-exec" {
