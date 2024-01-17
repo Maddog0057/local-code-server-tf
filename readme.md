@@ -49,7 +49,7 @@ On the target machine (make sure you have root) allow a user access to the docke
 #### To Enable remote docker access complete the following
 * On your target machine verify access to the docker daemon by running `docker info` as your target user
 * In 1Password create a login item with the username and password of the target account and set the website to the IP/hostname of your target machine
-* Add a local varible for `op_ssh_id` pointing to the UUID of the 1Password item
+* Add a local varible for `op_ssh_id` in `secrets.tf` pointing to the UUID of the 1Password item
 * Rename `copy-public-key.tf.off` to `copy-public-key.tf`
 * In `docker.tf` Uncomment the remote host line and comment the local docker host line
 
