@@ -51,7 +51,11 @@ On the target machine (make sure you have root) allow a user access to the docke
 * In 1Password create a login item with the username and password of the target account and set the website to the IP/hostname of your target machine
 * Add a local varible for `op_ssh_id` in `secrets.tf` pointing to the UUID of the 1Password item
 * Rename `copy-public-key.tf.off` to `copy-public-key.tf`
+
+If you are running your code server local start it at this point, if not, you have one last step
 * In `docker.tf` Uncomment the remote host line and comment the local docker host line
+
+Once your server is running perfrom the last step above for access to remote docker daemon within your code server container
 
 ### Adding and Subtracting Utilities
 Any package available by way of the APT repository can be added to the install list in `code-server-setup.sh` otherwise add your install script to the end of the file, just make sure `/init` is always the last line of the file.
