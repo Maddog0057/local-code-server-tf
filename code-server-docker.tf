@@ -35,11 +35,6 @@ resource "onepassword_item" "cs_sudo_login" {
   section {
     label = "cs_pk"
     field {
-      label = "privKey"
-      type  = "CONCEALED"
-      value = tls_private_key.cs_ed25519.private_key_openssh
-    }
-    field {
       label = "pubKey"
       type  = "STRING"
       value = tls_private_key.cs_ed25519.public_key_openssh
@@ -73,6 +68,14 @@ resource "docker_container" "codeserver_container" {
   upload {
     file    = "/config/.ssh/id_ed25519"
     content = sensitive(tls_private_key.cs_ed25519.private_key_openssh)
+  }
+  upload {
+    file    = "/config/.ssh/id_ed25519.pub"
+    content = sensitive(tls_private_key.cs_ed25519.public_key_openssh)
+  }
+  upload {
+    file    = "/config/.ssh/id_ed25519.sha256"
+    content = sensitive(tls_private_key.cs_ed25519.public_key_fingerprint_sha256)
   }
   ports {
     internal = 8443

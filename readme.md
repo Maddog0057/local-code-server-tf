@@ -42,6 +42,9 @@ There is no additional action items for Apple Silicon so long as Rosetta supprt 
 ### 1Password Support
 Configured out of the box, add a file called `secrets.tf` (or `literally_anything.tf`) and add local variables for `op_token` pointing to your 1password API token and `op_vault` to your vault ID. If you copy a link to any item in the vault `v=blah` will be part of the link, `blah` is your vault ID. Using this same method you can also find the Item UUID of any item by looking at `i=blah`. You can find out how to generate an API token here https://developer.1password.com/docs/service-accounts/get-started/
 
+### PKI Support
+TF will generate an ed25519 key pair and upload the public key along with it's SHA256 fingerprint to the same 1password object as your sudo password. Enabling `copy-public-key.tf` (remove `.off`) and configuring the `remote_docker_host` data source in `docker.tf` to point to a 1password object containing login informaton for your remote host will automatically trust your code server on that host on apply and remove access on destroy.
+
 ### Remote Docker Daemon Access
 Seemed like a pain to try and get this to run docker in docker, and passing through the local socket sounds like a bad idea so this seemed like a cool middle ground, you will *essentially* have root access on the target machine but the connection is encrypted and you need root to achieve this anyway. 
 On the target machine (make sure you have root) allow a user access to the docker daemon socket (`/var/run/docker.sock` usually) this can be done in a variety of ways (almost all carry increased risk!), simply `sudo usermod -aG docker <your_user>` usually works nicely (and is highly risky! Do this within an internal network only!!!), you can also mess around with simlinks, docker as a local user, etc. but this method will work with what I have built.

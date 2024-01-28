@@ -22,6 +22,13 @@ provider "onepassword" {
   service_account_token = local.op_token
 }
 
+/*
+data onepassword_item "remote_docker_creds" {
+  vault = local.vault_id
+  uuid = local.op_ssh_id
+}
+*/
+
 provider "docker" {
   # local docker host
   host = "unix:///var/run/docker.sock"
