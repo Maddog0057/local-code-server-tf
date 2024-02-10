@@ -66,10 +66,6 @@ resource "docker_container" "codeserver_container" {
     type   = "volume"
   }
   upload {
-    file    = "/config/.ssh/id_ed25519"
-    content = sensitive(tls_private_key.cs_ed25519.private_key_openssh)
-  }
-  upload {
     file    = "/config/.ssh/id_ed25519.pub"
     content = sensitive(tls_private_key.cs_ed25519.public_key_openssh)
   }

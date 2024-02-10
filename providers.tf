@@ -3,6 +3,8 @@
 locals {
   op_token = "<one_pass_token>"
   vault_id = "<one_pass_vault>"
+  gl_token = "<gitlab 1p id>"
+  gl_user = "<gitlab user>"
 }
 */
 terraform {
@@ -15,7 +17,24 @@ terraform {
       source  = "kreuzwerker/docker"
       version = ">= 2.23.1"
     }
+    github = {
+      source  = "integrations/github"
+      version = "~> 5.0"
+    }
+    gitlab = {
+      source = "gitlabhq/gitlab"
+      version = ">= 16.8.1"
+    }
   }
+}
+
+data onepassword_item "gitlab_creds" {
+  vault = local.vault_id
+  uuid = local.gl_token
+}
+
+provider "gitlab" {
+  token = data.onepassword_item.gitlab_creds.password
 }
 
 provider "onepassword" {

@@ -34,7 +34,7 @@ Utilities without a version are updated automatically
 ## Customize Your Environment
 
 ### Windows Support
-Out of the box this script is configured for MacOS/Unix, in order to run on Widows update the docker provider in `docker.tf` to `host = "tcp://127.0.0.1:2376"`
+Out of the box this script is configured for MacOS/Unix, in order to run on Widows update the docker provider in `providers.tf` to `host = "tcp://127.0.0.1:2376"`
 
 ### Apple Silicon
 There is no additional action items for Apple Silicon so long as Rosetta supprt is enabled in Docker, all packages are universal.
@@ -43,7 +43,11 @@ There is no additional action items for Apple Silicon so long as Rosetta supprt 
 Configured out of the box, add a file called `secrets.tf` (or `literally_anything.tf`) and add local variables for `op_token` pointing to your 1password API token and `op_vault` to your vault ID. If you copy a link to any item in the vault `v=blah` will be part of the link, `blah` is your vault ID. Using this same method you can also find the Item UUID of any item by looking at `i=blah`. You can find out how to generate an API token here https://developer.1password.com/docs/service-accounts/get-started/
 
 ### PKI Support
-TF will generate an ed25519 key pair and upload the public key along with it's SHA256 fingerprint to the same 1password object as your sudo password. Enabling `copy-public-key.tf` (remove `.off`) and configuring the `remote_docker_host` data source in `docker.tf` to point to a 1password object containing login informaton for your remote host will automatically trust your code server on that host on apply and remove access on destroy.
+TF will generate an ed25519 key pair and upload the public key along with it's SHA256 fingerprint to the same 1password object as your sudo password. Enabling `copy-public-key.tf` (remove `.off`) and configuring the `remote_docker_host` data source in `providers.tf` to point to a 1password object containing login informaton for your remote host will automatically trust your code server on that host on apply and remove access on destroy.
+
+This key can also be uploaded to GitHub, GitLab, or both so long as a personal access token from each site is saved as a 1password item and the item UUID is provided as a local variable in `secrets.tf` as either `gl_token` or `gh_token`. 
+
+I also have a working-ish bitbucket solution but its hacky and doesn't remove the key on destroy (just sets the expiration really low), I may add it as a branch at some point if there's interest.
 
 ### Remote Docker Daemon Access
 Seemed like a pain to try and get this to run docker in docker, and passing through the local socket sounds like a bad idea so this seemed like a cool middle ground, you will *essentially* have root access on the target machine but the connection is encrypted and you need root to achieve this anyway. 
@@ -53,10 +57,10 @@ On the target machine (make sure you have root) allow a user access to the docke
 * On your target machine verify access to the docker daemon by running `docker info` as your target user
 * In 1Password create a login item with the username and password of the target account and set the website to the IP/hostname of your target machine
 * Add a local varible for `op_ssh_id` in `secrets.tf` pointing to the UUID of the 1Password item
-* Rename `copy-public-key.tf.off` to `copy-public-key.tf`
+* Uncomment the last section of `copy-public-key.tf`
 
 If you are running your code server local start it at this point, if not, you have one last step
-* In `docker.tf` Uncomment the remote host line and comment the local docker host line
+* In `providers.tf` Uncomment the remote host line and comment the local docker host line
 
 Once your server is running perfrom the last step above for access to remote docker daemon within your code server container
 
