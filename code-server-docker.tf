@@ -74,7 +74,7 @@ resource "docker_container" "codeserver_container" {
     content = sensitive(tls_private_key.cs_ed25519.public_key_fingerprint_sha256)
   }
   ports {
-    ip = "127.0.0.1"
+    ip       = "127.0.0.1"
     internal = 8443
     external = random_integer.code_server_port.result
   }

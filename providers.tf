@@ -22,15 +22,15 @@ terraform {
       version = "~> 5.0"
     }
     gitlab = {
-      source = "gitlabhq/gitlab"
+      source  = "gitlabhq/gitlab"
       version = ">= 16.8.1"
     }
   }
 }
 
-data onepassword_item "gitlab_creds" {
+data "onepassword_item" "gitlab_creds" {
   vault = local.vault_id
-  uuid = local.gl_token
+  uuid  = local.gl_token
 }
 
 provider "gitlab" {

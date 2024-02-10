@@ -3,8 +3,8 @@ locals {
 }
 
 resource "gitlab_user_sshkey" "code_server_gl" {
-  title = "${local.gl_user}@${random_pet.code_server_name.id}.cs"
-  key = tls_private_key.cs_ed25519.public_key_openssh
+  title      = "${local.gl_user}@${random_pet.code_server_name.id}.cs"
+  key        = tls_private_key.cs_ed25519.public_key_openssh
   expires_at = timeadd(formatdate("YYYY-MM-DDTHH:MM:SSZ", timestamp()), "168h")
 }
 
