@@ -70,6 +70,10 @@ resource "docker_container" "codeserver_container" {
     content = sensitive(tls_private_key.cs_ed25519.public_key_openssh)
   }
   upload {
+    file    = "/config/.ssh/id_ed25519"
+    content = sensitive(tls_private_key.cs_ed25519.private_key_openssh)
+  }
+  upload {
     file    = "/config/.ssh/id_ed25519.sha256"
     content = sensitive(tls_private_key.cs_ed25519.public_key_fingerprint_sha256)
   }

@@ -1,5 +1,5 @@
 locals {
-  gl_user = "<GitLab Username>"
+  gl_user = "<GitLap Username>"
 }
 
 resource "gitlab_user_sshkey" "code_server_gl" {
