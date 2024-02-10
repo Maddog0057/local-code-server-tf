@@ -33,8 +33,17 @@ data "onepassword_item" "gitlab_creds" {
   uuid  = local.gl_token
 }
 
+data "onepassword_item" "github_creds" {
+  vault = local.vault_id
+  uuid  = local.gh_token
+}
+
 provider "gitlab" {
   token = data.onepassword_item.gitlab_creds.password
+}
+
+provider "github" {
+  token = data.onepassword_item.github_creds.password
 }
 
 provider "onepassword" {
