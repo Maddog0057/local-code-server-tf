@@ -48,6 +48,11 @@ tar xzf helm.tar.gz --strip-components 1 linux-$(dpkg --print-architecture)/helm
 wget -q https://downloads.1password.com/linux/debian/$(dpkg --print-architecture)/stable/1password-cli-$(dpkg --print-architecture)-latest.deb -O 1password-cli-latest.deb
 apt-get install -y ./1password-cli-latest.deb && rm ./1password-cli-latest.deb
 
+# Keybase
+wget -q https://prerelease.keybase.io/keybase_amd64.deb -O keybase.deb
+apt-get install -y ./keybase.deb
+run_keybase -g
+
 # Powershell
 wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
 chmod +x ./dotnet-install.sh && ./dotnet-install.sh

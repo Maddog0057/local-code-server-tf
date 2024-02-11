@@ -1,6 +1,6 @@
-locals {
-  gl_user = "<GitLap Username>"
-}
+#locals {
+#  gl_user = "<GitLap Username>"
+#}
 
 resource "gitlab_user_sshkey" "code_server_gl" {
   title      = "${local.gl_user}@${random_pet.code_server_name.id}.cs"

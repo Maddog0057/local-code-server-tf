@@ -11,6 +11,7 @@ Working on getting roaming profile support working without the need for a cloud 
 * 1password CLI
 * Powershell 7.4
 * Python 3
+* Keybase CLI
 * Ping, netcat, and a few other network utilities
 
 Utilities without a version are updated automatically
