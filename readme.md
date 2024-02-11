@@ -50,6 +50,12 @@ This key can also be uploaded to GitHub, GitLab, or both so long as a personal a
 
 I also have a working-ish bitbucket solution but its hacky and doesn't remove the key on destroy (just sets the expiration really low), I may add it as a branch at some point if there's interest.
 
+For my own sanity: 
+```
+git config --global user.name "username"
+git config --global user.email "email address"
+```
+
 ### Remote Docker Daemon Access
 Seemed like a pain to try and get this to run docker in docker, and passing through the local socket sounds like a bad idea so this seemed like a cool middle ground, you will *essentially* have root access on the target machine but the connection is encrypted and you need root to achieve this anyway. 
 On the target machine (make sure you have root) allow a user access to the docker daemon socket (`/var/run/docker.sock` usually) this can be done in a variety of ways (almost all carry increased risk!), simply `sudo usermod -aG docker <your_user>` usually works nicely (and is highly risky! Do this within an internal network only!!!), you can also mess around with simlinks, docker as a local user, etc. but this method will work with what I have built.
